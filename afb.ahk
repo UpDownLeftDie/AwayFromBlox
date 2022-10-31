@@ -1,7 +1,6 @@
 #SingleInstance Force
 
 isRunning := false
-Return
 
 #MaxThreadsPerHotkey 2
 F1:: {
