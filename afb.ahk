@@ -1,48 +1,47 @@
-; SingleInstance restarts the script every time you run it with no dialog.
-; Max Threads Per Hotkey seems to do something.
-#SingleInstance, Force
-#MaxThreadsPerHotkey 2
-; InputBox, VarTime, Enter time, Type the time in seconds
-IntervalTime := 9*1000*60 ; 9 mins (1/2 afk timer - 1 for redundancy)
-; toggle := false
+#SingleInstance Force
+
+isRunning := false
 Return
 
-F1::
-  toggle := !toggle
-	if (!toggle) {
-		Reload
-	}
-  While (toggle) {
+#MaxThreadsPerHotkey 2
+F1:: {
+  global isRunning := !isRunning
+  While (isRunning) {
 		if WinExist("Roblox") {
-    	WinActivate ; Use the window found by WinExist.
+    	WinActivate ; defaults to WinExist
 			sleep 200
 
 			; Reconnect
-			WinGetPos, winX, winY, winWidth, winHeight, A
+			WinGetPos ,, &winWidth, &winHeight ; defaults to WinExist
+			; TESTING - hopefully clicks reconnect button at any scale
+			;  working at 2k though
 			X := winWidth * 0.525
 			Y := winHeight * 0.548
-			Click %X% %Y% 2 ; Click, 1350 780 2
+			Click X, Y, 2
 			sleep 600
 
 			; Break AFK with jump
-			send {space down}
+			send "{Space down}"
 			sleep 100
-			send {space up}
-			sleep 500
+			send "{Space up}"
 
 			; Buy anything infront of you
-			send {e down}
-			sleep 100
-			send {e up}
+			send "{e}"
 			sleep 3000
-
-			; close egg showcase
-			send {e down}
-			sleep 100
-			send {e up}
+			send "{e}" ; close egg showcase
 		} else {
 			Return
 		}
-		sleep %IntervalTime%
+		antiKickInterval := GetIntervalMins()
+		sleep antiKickInterval
 	}
-Return
+}
+
+; Gets a random time between 3mins and 15mins
+;  (avg 9: 1/2 AFK timer - 1 (for redundancy))
+GetIntervalMins() {
+		threeMins := 3*1000*60
+		sixteenMins := 15*1000*60
+    antiKickInterval := Random(threeMins, sixteenMins)
+    return antiKickInterval
+}
