@@ -7,23 +7,39 @@ ONE_MIN			 := 1000 * 60
 THREE_MINS	 := 3 * ONE_MIN
 FIVE_MINS 	 := 5 * ONE_MIN
 SIXTEEN_MINS := 15 * ONE_MIN
+DATA_DIR := A_ScriptDir . "\data"
+RECONNECT_BUTTON_IMG := DATA_DIR . "\reconnect-button.png"
+RECONNECT_TEXT_IMG := DATA_DIR . "\reconnect-text.png"
+RECONNECT_IMG_SEARCH_ARRAY := [RECONNECT_BUTTON_IMG, RECONNECT_TEXT_IMG]
 
 /*
 	globals
 */
 IsRunning := false
+DirCreate(DATA_DIR)
+FileInstall(RECONNECT_BUTTON_IMG, RECONNECT_BUTTON_IMG, 1)
+FileInstall(RECONNECT_TEXT_IMG, RECONNECT_TEXT_IMG, 1)
 
 #MaxThreadsPerHotkey 2
 F1:: {
 	global IsRunning := !IsRunning
 	While (IsRunning) {
-		if WinExist("Roblox") {
-			WinActivate ; defaults to WinExist
-			WinGetPos(&winX, &winY, &winWidth, &winHeight) ; defaults to WinExist
+		lastID := WinGetID("A")
+		robloxID := WinExist("Roblox")
+		if (robloxID) {
+			; BEGIN WORK
+			BlockInput(True)
+
+			WinActivate(robloxID)
+			WinGetPos(&winX, &winY, &winWidth, &winHeight, robloxID)
 
 			Reconnect(winWidth, winHeight)
 
 			BreakAFK()
+
+			WinActivate(lastID)
+			BlockInput(False)
+			; END OF WORK
 
 			antiKickInterval := GetIntervalMins()
 			sleep(antiKickInterval)
@@ -48,17 +64,11 @@ BreakAFK() {
 */
 Reconnect(winWidth, winHeight) {
 	try {
-		searchImage := "plugins/roblox/reconnect-button.png"
-		if (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
-			ClickImageMidPoint(searchImage, foundX, foundY)
-			return 1
-		}
-
-		; try with smaller image, this seems to be less reliable
-		searchImage := "plugins/roblox/reconnect-text.png"
-		if (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
-			ClickImageMidPoint(searchImage, foundX, foundY)
-			return 1
+		for (searchImage in RECONNECT_IMG_SEARCH_ARRAY) {
+			if (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
+				ClickImageMidPoint(searchImage, foundX, foundY)
+				return 1
+			}
 		}
 	} catch as exc {
 		MsgBox "Something went wrong when trying to check for reconnect button:`n" exc.Message
