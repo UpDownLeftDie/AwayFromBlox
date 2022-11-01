@@ -19,11 +19,12 @@ AutoHotkey scripts to specifically to help you when you're *Away From (Ro)Blox*
 
 * Fix toggling
   * Probably need to replace `sleep` with a [timer](https://lexikos.github.io/v2/docs/commands/SetTimer.htm)
-* Only click if reconnection button exists
-  * Probably easily check for white color at the coordinates
-* Eventually remove custom `ahk2exe` github action, once its been updated to support AHK v2 (watch [GitHub-Action-Ahk2Exe](https://github.com/nekocodeX/GitHub-Action-Ahk2Exe))
-* Test/fix/verify we can use scaling for clicking reconnection button
-  * If not try to figure out a way to find button and click on it
+* Test clicking reconnection button on different resolutions
+  * We may need to add additional sizes or DPIs for ImageSearch to work on a variety of devices
+* Eventually remove custom `ahk2exe` github action, once its been updated to support AHK v2 (watch [GitHub-Action-Ahk2Exe](https://github.com/nekocodeX/GitHub-Action-Ahk2Exe) repo)
 * Modularity
   * Support multiple games with unique AFK conditions and loops
 * Swap back to last active window after executing anti-kick
+* Startup config
+  * Options to select which modules/game actions to load
+  * Option for what the "AFK break action" is (default: space key)

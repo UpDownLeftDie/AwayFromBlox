@@ -1,29 +1,23 @@
 #SingleInstance Force
-CoordMode "Mouse", "Client"
-CoordMode "Pixel", "Client"
 
-isRunning := false
+IsRunning := false
 
 #MaxThreadsPerHotkey 2
 F1:: {
-  global isRunning := !isRunning
-  While (isRunning) {
+  global IsRunning := !IsRunning
+  While (IsRunning) {
 		if WinExist("Roblox") {
     	WinActivate ; defaults to WinExist
-			WinGetPos ,, &winWidth, &winHeight ; defaults to WinExist
+			WinGetPos(&winX, &winY, &winWidth, &winHeight) ; defaults to WinExist
 
 			; Reconnect
 			Reconnect(winWidth, winHeight)
 
-			; Break AFK with jump
-			send "{Space down}"
-			sleep 100
-			send "{Space up}"
-
-			; Buy anything infront of you
-			send "{e}"
-			sleep 3000
-			send "{e}" ; close egg showcase
+			; Break AFK
+			; TODO allow action to be defined by user upon startup and/or config
+			send("{Space down}")
+			sleep(100)
+			send("{Space up}")
 		} else {
 			Return
 		}
@@ -32,38 +26,56 @@ F1:: {
 	}
 }
 
+; Attemps to reconnect the user if the reconnection box is detected
 Reconnect(winWidth, winHeight) {
-	; TESTING - hopefully clicks reconnect button at any scale
+	try {
+		searchImage := "plugins/roblox/reconnect-button.png"
+		if (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
+			ClickImageMidPoint(searchImage, foundX, foundY)
+			return 1
+		}
 
-	; Logic here is that position is relative but the box is a fixed size
-	;  so we find the relative offset of the reconnection box, then apply the
-	;  fixed offset of the corner of the box to the button
-
-	; Sample values:
-	;  app: 2099, 1351
-	;  upper left corner of reconnect box: 845, 550
-	;  button location: 1070, 720
-	;  delta: 230, 170
-
-	; corner location / app size = relative offset
-	; TODO: investigate using ImageSearch (for button) or even PixelSearch search
-	boxX := winWidth * 0.403
-	boxY := winHeight * 0.407
-	; corner location + fixed button delta
-	buttonX := boxX + 230
-	buttonY := boxY + 170
-
-	; test slightly in from the corner, this area is usually empty
-	if (PixelGetColor(boxX + 10, boxY + 10) == "0x393B3D") {
-		Click(buttonX, buttonY, 5)
+		; try with smaller image, this seems to be less reliable
+		searchImage := "plugins/roblox/reconnect-text.png"
+		if (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
+			ClickImageMidPoint(searchImage, foundX, foundY)
+			return 1
+		}
+	} catch as exc {
+		MsgBox "Something went wrong when trying to check for reconnect button:`n" exc.Message
+		Reload
 	}
+	return 0
 }
 
-; Gets a random time between 3mins and 15mins
+; Returns a random time between 3mins and 15mins
 ;  (avg 9mins: 1/2 AFK timer - 1 (this is for redundancy))
 GetIntervalMins() {
 		threeMins := 3*1000*60
 		sixteenMins := 15*1000*60
     antiKickInterval := Random(threeMins, sixteenMins)
     return antiKickInterval
+}
+
+; Returns the middel of coordinates of an image
+;  Alternative to loading GDI+ lib: https://www.autohotkey.com/boards/viewtopic.php?p=445556#p445556
+GetImageMidPoint(file) {
+	imgGui := Gui()
+	img := imgGui.Add("Picture",, file)
+	imgGui.Show("Hide")
+	ControlGetPos(,, &w, &h, img.hwnd)
+	imgGui.Destroy()
+	return [w/2, h/2]
+}
+
+; Clicks the middle of an image with an offset
+ClickImageMidPoint(imageFile, xOffset, yOffset) {
+	imageMidPoint := GetImageMidPoint(imageFile)
+	clickX := imageMidPoint[1] + xOffset
+	clickY := imageMidPoint[2] + yOffset
+
+	; ! Clicks seems to be flakey, this is why using two Click() instead of the 3rd parameter
+	Click(clickX, clickY)
+	sleep(350)
+	Click(clickX, clickY)
 }
