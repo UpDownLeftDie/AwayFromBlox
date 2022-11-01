@@ -28,3 +28,7 @@ AutoHotkey scripts to specifically to help you when you're *Away From (Ro)Blox*
 * Startup config
   * Options to select which modules/game actions to load
   * Option for what the "AFK break action" is (default: space key)
+
+## Contributing
+
+See [contributing.md](contributing.md)
