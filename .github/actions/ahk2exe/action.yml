@@ -18,6 +18,34 @@ inputs:
 runs:
   using: composite
   steps:
+    # - name: Generate Names
+    #   id: names
+    #   shell: bash
+    #   run: |
+    #     echo "in_name=${{inputs.in}}.ahk" >> $GITHUB_ENV
+    #     echo "out_name=${{inputs.in}}" >> $GITHUB_ENV
+    #     if ('${{inputs.out}}' -ne '') {
+    #       echo "out_name=${{inputs.out}}" >> $GITHUB_ENV
+    #     }
+    #     echo 'icon_param=""' >> $GITHUB_ENV
+    #     if ('${{inputs.icon}}' -ne '') {
+    #       echo 'icon_param=" /icon ${{inputs.icon}}"' >> $GITHUB_ENV
+    #     }
+
+    - name: Generate Names
+      id: names
+      shell: pwsh
+      run: |
+        $in_name = "${{inputs.in}}.ahk"
+        $out_name = "${{inputs.in}}"
+        if ('${{inputs.out}}' -ne '') {
+          $out_name = "${{inputs.out}}"
+        }
+        $icon_param = ""
+        if ('${{inputs.icon}}' -ne '') {
+         $icon_param = ' /icon "${{inputs.icon}}"'
+        }
+
     - name: Extract Ahk2Exe
       shell: pwsh
       run: |
@@ -27,33 +55,11 @@ runs:
 
     - name: Run Ahk2Exe_64-bit
       shell: pwsh
-      run: |
-        $command = ' /base "$cwd\_autohotkey\Compiler\AutoHotkey64.exe" /in "${{inputs.in}}.ahk"'
-        if('${{inputs.out}}' -ne ''){
-          $command += ' /out "${{inputs.out}}_64-bit.exe"'
-        } else {
-          $command += ' /out "${{inputs.in}}_64-bit.exe"'
-        }
-        if('${{inputs.icon}}' -ne ''){
-          $command += ' /icon "${{inputs.icon}}"'
-        }
-        $command += ' /silent verbose | Write-Output'
-        .\Ahk2exe.exe ${{command}}
+      run: Ahk2exe.exe /base "$cwd\_autohotkey\Compiler\AutoHotkey64.exe" /in $in_name /out $out_name_64-bit.exe $icon_param /silent verbose
 
     - name: Run Ahk2Exe_32-bit
-      shell: cmd
-      run: |
-        $command = ' /base "$cwd\_autohotkey\Compiler\AutoHotkey32.exe" /in "${{inputs.in}}.ahk"'
-        if('${{inputs.out}}' -ne ''){
-          $command += ' /out "${{inputs.out}}_32-bit.exe"'
-        } else {
-          $command += ' /out "${{inputs.in}}_32-bit.exe"'
-        }
-        if('${{inputs.icon}}' -ne ''){
-          $command += ' /icon "${{inputs.icon}}"'
-        }
-        $command += ' /silent verbose | Write-Output'
-        .\Ahk2exe.exe ${{command}}
+      shell: pwsh
+      run: Ahk2exe.exe /base "$cwd\_autohotkey\Compiler\AutoHotkey32.exe" /in $in_name /out $out_name_32-bit.exe $icon_param /silent verbose
 
 branding:
   color: green
