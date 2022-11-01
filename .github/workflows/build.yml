@@ -1,0 +1,33 @@
+name: Ahk2Exe
+
+on:
+  push:
+    branches:
+      - 'main'
+    tags:
+      - 'v*'
+  pull_request:
+
+jobs:
+  Ahk2Exe:
+    name: Ahk2Exe
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Ahk2Exe
+        uses: ./.github/actions/ahk2exe
+        with:
+          in: AFB
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            AFB_64-bit.exe
+            AFB_32-bit.exe
+            AFB.ahk
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
