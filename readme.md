@@ -26,3 +26,4 @@ AutoHotkey scripts to specifically to help you when you're *Away From (Ro)Blox*
   * If not try to figure out a way to find button and click on it
 * Modularity
   * Support multiple games with unique AFK conditions and loops
+* Swap back to last active window after executing anti-kick
