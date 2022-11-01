@@ -7,18 +7,19 @@ ONE_MIN			 := 1000 * 60
 THREE_MINS	 := 3 * ONE_MIN
 FIVE_MINS 	 := 5 * ONE_MIN
 SIXTEEN_MINS := 15 * ONE_MIN
-DATA_DIR := A_ScriptDir . "\data"
+DATA_DIR := A_WorkingDir . "\data"
 RECONNECT_BUTTON_IMG := DATA_DIR . "\reconnect-button.png"
 RECONNECT_TEXT_IMG := DATA_DIR . "\reconnect-text.png"
 RECONNECT_IMG_SEARCH_ARRAY := [RECONNECT_BUTTON_IMG, RECONNECT_TEXT_IMG]
+
+DirCreate(DATA_DIR)
+FileInstall("data\reconnect-button.png", RECONNECT_BUTTON_IMG, 1)
+FileInstall("data\reconnect-text.png", RECONNECT_TEXT_IMG, 1)
 
 /*
 	globals
 */
 IsRunning := false
-DirCreate(DATA_DIR)
-FileInstall(RECONNECT_BUTTON_IMG, RECONNECT_BUTTON_IMG, 1)
-FileInstall(RECONNECT_TEXT_IMG, RECONNECT_TEXT_IMG, 1)
 
 #MaxThreadsPerHotkey 2
 F1:: {
