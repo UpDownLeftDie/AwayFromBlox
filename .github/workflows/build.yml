@@ -19,15 +19,15 @@ jobs:
       - name: Ahk2Exe
         uses: ./.github/actions/ahk2exe
         with:
-          in: afb
+          in: AFB
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            afb_64-bit.exe
-            afb_32-bit.exe
-            afb.ahk
+            AFB_64-bit.exe
+            AFB_32-bit.exe
+            AFB.ahk
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

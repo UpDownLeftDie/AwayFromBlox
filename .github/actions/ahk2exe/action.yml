@@ -18,22 +18,8 @@ inputs:
 runs:
   using: composite
   steps:
-    # - name: Generate Names
-    #   id: names
-    #   shell: bash
-    #   run: |
-    #     echo "in_name=${{inputs.in}}.ahk" >> $GITHUB_ENV
-    #     echo "out_name=${{inputs.in}}" >> $GITHUB_ENV
-    #     if ('${{inputs.out}}' -ne '') {
-    #       echo "out_name=${{inputs.out}}" >> $GITHUB_ENV
-    #     }
-    #     echo 'icon_param=""' >> $GITHUB_ENV
-    #     if ('${{inputs.icon}}' -ne '') {
-    #       echo 'icon_param=" /icon ${{inputs.icon}}"' >> $GITHUB_ENV
-    #     }
-
-    - name: Generate Names
-      id: names
+    - name: Get Vars
+      id: get-vars
       shell: pwsh
       run: |
         $in_name = "${{inputs.in}}.ahk"
@@ -47,6 +33,7 @@ runs:
         }
 
     - name: Extract Ahk2Exe
+      id: extract-ahk2exe
       shell: pwsh
       run: |
         $cwd = (Get-Item .).FullName;
@@ -54,12 +41,14 @@ runs:
         Write-Output ("$cwd\_autohotkey\;" + "$cwd\_autohotkey\Compiler") | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Run Ahk2Exe_64-bit
+      id: build-64bit
       shell: pwsh
-      run: Ahk2exe.exe /base "$cwd\_autohotkey\Compiler\AutoHotkey64.exe" /in $in_name /out $out_name_64-bit.exe $icon_param /silent verbose
+      run: Ahk2exe.exe /base "$cwd\_autohotkey\Compiler\AutoHotkey64.exe" /in "$in_name" /out "$out_name"_64-bit.exe "$icon_param" /silent verbose
 
     - name: Run Ahk2Exe_32-bit
+      id: build-32bit
       shell: pwsh
-      run: Ahk2exe.exe /base "$cwd\_autohotkey\Compiler\AutoHotkey32.exe" /in $in_name /out $out_name_32-bit.exe $icon_param /silent verbose
+      run: Ahk2exe.exe /base "$cwd\_autohotkey\Compiler\AutoHotkey32.exe" /in "$in_name" /out "$out_name"_32-bit.exe "$icon_param" /silent verbose
 
 branding:
   color: green
