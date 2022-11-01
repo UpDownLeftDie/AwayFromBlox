@@ -24,6 +24,11 @@ jobs:
         with:
           in: AFB
           build_dir: build
+      - name: Easy Zip Files
+        uses: vimtor/action-zip@v1
+        with:
+          files: AFB.ahk plugins/
+          dest: build/AFB.zip
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -32,6 +37,6 @@ jobs:
           files: |
             build/AFB_64-bit.exe
             build/AFB_32-bit.exe
-            AFB.ahk
+            build/AFB.zip
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
