@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Ahk2Exe
-        uses: ./.github/actions/ahk2exe.yml
+        uses: ./.github/actions/ahk2exe
         with:
           in: afb.ahk
 
