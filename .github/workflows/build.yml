@@ -14,17 +14,20 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Ahk2Exe
         uses: ./.github/actions/ahk2exe
         with:
-          in: afb.ahk
+          in: afb
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@latest
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: afb.exe
+          files: |
+            afb_64-bit.exe
+            afb_32-bit.exe
+            afb.ahk
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

@@ -29,7 +29,7 @@ runs:
       shell: pwsh
       run: |
         $command = 'ahk2exe.exe /silent verbose '
-        $command += '/in "${{inputs.in}}" '
+        $command += '/in "${{inputs.in}}.ahk" '
         if('${{inputs.out}}' -ne ''){
           $command += '/out "${{inputs.out}}_64-bit" '
         } else {
@@ -46,7 +46,7 @@ runs:
       shell: pwsh
       run: |
         $command = 'ahk2exe.exe /silent verbose '
-        $command += '/in "${{inputs.in}}" '
+        $command += '/in "${{inputs.in}}.ahk" '
         if('${{inputs.out}}' -ne ''){
           $command += '/out "${{inputs.out}}_32-bit" '
         } else {
