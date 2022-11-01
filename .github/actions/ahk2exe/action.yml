@@ -27,7 +27,7 @@ runs:
       run: |
         $cwd = (Get-Item .).FullName;
         echo $cwd;
-        ls -la;
+        ls;
         Expand-Archive -Path "$cwd\ahk2exe-v1.1.35.00.zip" -DestinationPath "$cwd\_autohotkey\" -Force;
         Write-Output ("$cwd\_autohotkey\;" + "$cwd\_autohotkey\Compiler") | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         if('${{inputs.base}}' -ne ''){
