@@ -28,7 +28,7 @@ runs:
     - name: Run Ahk2Exe_64-bit
       shell: pwsh
       run: |
-        $command = 'Ahk2exe.exe /base "$cwd\_autohotkey\Compiler\AutoHotkey64.exe" /in "${{inputs.in}}.ahk"'
+        $command = ' /base "$cwd\_autohotkey\Compiler\AutoHotkey64.exe" /in "${{inputs.in}}.ahk"'
         if('${{inputs.out}}' -ne ''){
           $command += ' /out "${{inputs.out}}_64-bit.exe"'
         } else {
@@ -38,13 +38,12 @@ runs:
           $command += ' /icon "${{inputs.icon}}"'
         }
         $command += ' /silent verbose | Write-Output'
-        $command
-        Invoke-Expression $command
+        .\Ahk2exe.exe ${{command}}
 
     - name: Run Ahk2Exe_32-bit
-      shell: pwsh
+      shell: cmd
       run: |
-        $command = 'Ahk2exe.exe /base "$cwd\_autohotkey\Compiler\AutoHotkey32.exe" /in "${{inputs.in}}.ahk"'
+        $command = ' /base "$cwd\_autohotkey\Compiler\AutoHotkey32.exe" /in "${{inputs.in}}.ahk"'
         if('${{inputs.out}}' -ne ''){
           $command += ' /out "${{inputs.out}}_32-bit.exe"'
         } else {
@@ -54,7 +53,7 @@ runs:
           $command += ' /icon "${{inputs.icon}}"'
         }
         $command += ' /silent verbose | Write-Output'
-        Invoke-Expression -Command $command
+        .\Ahk2exe.exe ${{command}}
 
 branding:
   color: green
