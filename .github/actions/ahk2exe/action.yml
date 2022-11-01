@@ -1,10 +1,10 @@
 name: Ahk2Exe
 description: GitHub Action to compile AutoHotKey scripts using Ahk2Exe
-author: nekocodeX, modified for ahk v2 by jaredkotoff
+author: nekocodeX, modified for AHK v2 by jaredkotoff
 
 inputs:
   in:
-    description: The path or file name of the AutoHotKey script to compile
+    description: The path or file name of the AutoHotKey script to compile (without the .ahk extension)
     required: true
   out:
     description: The path or file name of the compiled executable (by default, an executable of the same name will be created in the path of the AutoHotKey script specified by the "in" parameter)
@@ -18,7 +18,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install AutoHotkey
+    - name: Extract Ahk2Exe
       shell: pwsh
       run: |
         $cwd = (Get-Item .).FullName;
@@ -31,9 +31,9 @@ runs:
         $command = 'ahk2exe.exe /silent verbose '
         $command += '/in "${{inputs.in}}.ahk" '
         if('${{inputs.out}}' -ne ''){
-          $command += '/out "${{inputs.out}}_64-bit" '
+          $command += '/out "${{inputs.out}}_64-bit.exe" '
         } else {
-          $command += '/out "${{inputs.in}}_64-bit" '
+          $command += '/out "${{inputs.in}}_64-bit.exe" '
         }
         if('${{inputs.icon}}' -ne ''){
           $command += '/icon "${{inputs.icon}}" '
@@ -42,22 +42,22 @@ runs:
         $command += "| Write-Output"
         Invoke-Expression $command
 
-    - name: Run Ahk2Exe_32-bit
-      shell: pwsh
-      run: |
-        $command = 'ahk2exe.exe /silent verbose '
-        $command += '/in "${{inputs.in}}.ahk" '
-        if('${{inputs.out}}' -ne ''){
-          $command += '/out "${{inputs.out}}_32-bit" '
-        } else {
-          $command += '/out "${{inputs.in}}_32-bit" '
-        }
-        if('${{inputs.icon}}' -ne ''){
-          $command += '/icon "${{inputs.icon}}" '
-        }
-        $command += '/base "$cwd\_autohotkey\Compiler\AutoHotkey32.exe" '
-        $command += "| Write-Output"
-        Invoke-Expression $command
+    # - name: Run Ahk2Exe_32-bit
+    #   shell: pwsh
+    #   run: |
+    #     $command = 'ahk2exe.exe /silent verbose '
+    #     $command += '/in "${{inputs.in}}.ahk" '
+    #     if('${{inputs.out}}' -ne ''){
+    #       $command += '/out "${{inputs.out}}_32-bit.exe" '
+    #     } else {
+    #       $command += '/out "${{inputs.in}}_32-bit.exe" '
+    #     }
+    #     if('${{inputs.icon}}' -ne ''){
+    #       $command += '/icon "${{inputs.icon}}" '
+    #     }
+    #     $command += '/base "$cwd\_autohotkey\Compiler\AutoHotkey32.exe" '
+    #     $command += "| Write-Output"
+    #     Invoke-Expression $command
 
 branding:
   color: green
