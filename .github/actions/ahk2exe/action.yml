@@ -10,6 +10,10 @@ inputs:
     description: The path or file name of the compiled executable (by default, an executable of the same name will be created in the path of the AutoHotKey script specified by the "in" parameter)
     required: false
     default: ''
+  build_dir:
+    description: Folder where action-gh-release can find the binaries
+    required: false
+    default: '_autohotkey'
   icon:
     description: The icon of the executable file is specified
     required: false
@@ -22,33 +26,38 @@ runs:
       id: get-vars
       shell: pwsh
       run: |
-        $in_name = "${{inputs.in}}.ahk"
-        $out_name = "${{inputs.in}}"
-        if ('${{inputs.out}}' -ne '') {
-          $out_name = "${{inputs.out}}"
+        $cwd = (Get-Item .).FullName
+        $build_dir = "$cwd\${{ inputs.build_dir }}"
+        Add-Content -Path $env:GITHUB_ENV -Value "cwd=$cwd";
+        Add-Content -Path $env:GITHUB_ENV -Value "build_dir=$build_dir";
+        Add-Content -Path $env:GITHUB_ENV -Value "in_name=${{ inputs.in }}.ahk";
+        if ('${{ inputs.out }}' -ne '') {
+           Add-Content -Path $env:GITHUB_ENV -Value "out_name=${{ inputs.out }}";
+        } else {
+          Add-Content -Path $env:GITHUB_ENV -Value "out_name=${{ inputs.in }}";
         }
-        $icon_param = ""
-        if ('${{inputs.icon}}' -ne '') {
-         $icon_param = ' /icon "${{inputs.icon}}"'
+        if ('${{ inputs.icon }}' -ne '') {
+          Add-Content -Path $env:GITHUB_ENV -Value "icon_param='/icon ${{ inputs.icon }}'";
+        } else {
+          Add-Content -Path $env:GITHUB_ENV -Value "icon_param=''";
         }
 
     - name: Extract Ahk2Exe
       id: extract-ahk2exe
       shell: pwsh
       run: |
-        $cwd = (Get-Item .).FullName;
-        Expand-Archive -Path "$cwd\.github\actions\ahk2exe\ahk2exe-v1.1.35.00.zip" -DestinationPath "$cwd\_autohotkey\" -Force;
-        Write-Output ("$cwd\_autohotkey\;" + "$cwd\_autohotkey\Compiler") | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        Expand-Archive -Path "${{ env.cwd }}\.github\actions\ahk2exe\ahk2exe-v1.1.35.00.zip" -DestinationPath "${{ env.build_dir }}\" -Force;
+        Write-Output ("${{ env.build_dir }}\;" + "${{ env.build_dir }}\Compiler") | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append;
 
     - name: Run Ahk2Exe_64-bit
       id: build-64bit
       shell: pwsh
-      run: Ahk2exe.exe /base "$cwd\_autohotkey\Compiler\AutoHotkey64.exe" /in "$in_name" /out "$out_name"_64-bit.exe "$icon_param" /silent verbose
+      run: Ahk2exe.exe /base "${{ env.build_dir }}\Compiler\AutoHotkey64.exe" /in ${{ env.in_name }} /out "${{ env.build_dir }}\${{ env.out_name }}_64-bit.exe" ${{ env.icon_param }} /silent verbose | Write-Output
 
     - name: Run Ahk2Exe_32-bit
       id: build-32bit
       shell: pwsh
-      run: Ahk2exe.exe /base "$cwd\_autohotkey\Compiler\AutoHotkey32.exe" /in "$in_name" /out "$out_name"_32-bit.exe "$icon_param" /silent verbose
+      run: Ahk2exe.exe /base "${{ env.build_dir }}\Compiler\AutoHotkey32.exe" /in ${{ env.in_name }} /out "${{ env.build_dir }}\${{ env.out_name }}_32-bit.exe" ${{ env.icon_param }} /silent verbose | Write-Output
 
 branding:
   color: green
