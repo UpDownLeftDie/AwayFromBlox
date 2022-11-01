@@ -1,0 +1,8 @@
+{
+  "[ahk]": {
+    "editor.defaultFormatter": "mark-wiemer.vscode-autohotkey-plus-plus"
+  },
+  "cSpell.enableFiletypes": [
+    "ahk"
+  ]
+}
