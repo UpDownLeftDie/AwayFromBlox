@@ -1,15 +1,17 @@
+; AHK v2
 #SingleInstance Force
 
 /*
 	constants
 */
-ONE_MIN			 := 1000 * 60
+ONE_MIN			 := 60 * 1000
 THREE_MINS	 := 3 * ONE_MIN
 FIVE_MINS 	 := 5 * ONE_MIN
-SIXTEEN_MINS := 15 * ONE_MIN
-DATA_DIR := A_WorkingDir . "\data"
-RECONNECT_BUTTON_IMG := DATA_DIR . "\reconnect-button.png"
-RECONNECT_TEXT_IMG := DATA_DIR . "\reconnect-text.png"
+FIFTEEN_MINS := 15 * ONE_MIN
+
+DATA_DIR 									 := A_WorkingDir . "\data"
+RECONNECT_BUTTON_IMG 			 := DATA_DIR . "\reconnect-button.png"
+RECONNECT_TEXT_IMG 				 := DATA_DIR . "\reconnect-text.png"
 RECONNECT_IMG_SEARCH_ARRAY := [RECONNECT_BUTTON_IMG, RECONNECT_TEXT_IMG]
 
 DirCreate(DATA_DIR)
@@ -20,13 +22,13 @@ FileInstall("data\reconnect-text.png", RECONNECT_TEXT_IMG, 1)
 	globals
 */
 IsRunning := false
-TrayTip("Script is ready for input. AntiKick is disabled.", "AwayFromBlox")
+SetTrayTip("Script is ready for input. Anti-kick is disabled.")
 
 #MaxThreadsPerHotkey 2
 F1:: {
 	global IsRunning := !IsRunning
 	If (IsRunning) {
-		TrayTip("AntiKick is enabled.", "AwayFromBlox")
+		SetTrayTip("Anti-kick is enabled.")
 	} Else {
 		Reload()
 	}
@@ -35,7 +37,7 @@ F1:: {
 		lastID := WinGetID("A")
 		robloxID := WinExist("Roblox")
 		if (robloxID) {
-			; BEGIN WORK
+			; BEGIN WORK - any automation must be done between the BlockInputs
 			BlockInput(True)
 
 			WinActivate(robloxID)
@@ -45,7 +47,9 @@ F1:: {
 
 			BreakAFK()
 
-			WinActivate(lastID)
+			if (lastID) {
+				WinActivate(lastID)
+			}
 			BlockInput(False)
 			; END OF WORK
 
@@ -61,9 +65,14 @@ F1:: {
 	Core logic for "breaking" afk idle timer
 */
 BreakAFK() {
+	sleep(300)
 	; TODO allow action to be defined by user upon startup and/or config
 	send("{Space down}")
-	sleep(100)
+	sleep(50)
+	send("{Space up}")
+	sleep(500)
+	send("{Space down}")
+	sleep(50)
 	send("{Space up}")
 }
 
@@ -78,8 +87,8 @@ Reconnect(winWidth, winHeight) {
 				return 1
 			}
 		}
-	} catch as exc {
-		MsgBox "Something went wrong when trying to check for reconnect button:`n" exc.Message
+	} catch as err {
+		MsgBox "Something went wrong when trying to check for reconnect button:`n" err.Message
 		Reload
 	}
 	return 0
@@ -90,7 +99,7 @@ Reconnect(winWidth, winHeight) {
 		(avg 9mins: 1/2 AFK timer - 1 (this is for redundancy))
 */
 GetIntervalMins() {
-	randomMins := Random(THREE_MINS, SIXTEEN_MINS)
+	randomMins := Random(THREE_MINS, FIFTEEN_MINS)
 	return randomMins
 }
 
@@ -119,4 +128,8 @@ ClickImageMidPoint(imageFile, xOffset, yOffset){
 	Click(clickX, clickY)
 	sleep(350)
 	Click(clickX, clickY)
+}
+
+SetTrayTip(str, title := "AwayFromBlox") {
+	TrayTip(str, title)
 }
