@@ -1,3 +1,4 @@
+; AHK v2
 #SingleInstance Force
 
 /*
