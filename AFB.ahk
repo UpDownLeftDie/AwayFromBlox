@@ -20,10 +20,17 @@ FileInstall("data\reconnect-text.png", RECONNECT_TEXT_IMG, 1)
 	globals
 */
 IsRunning := false
+TrayTip("Script is ready for input. AntiKick is disabled.", "AwayFromBlox")
 
 #MaxThreadsPerHotkey 2
 F1:: {
 	global IsRunning := !IsRunning
+	If (IsRunning) {
+		TrayTip("AntiKick is enabled.", "AwayFromBlox")
+	} Else {
+		Reload()
+	}
+
 	While (IsRunning) {
 		lastID := WinGetID("A")
 		robloxID := WinExist("Roblox")
