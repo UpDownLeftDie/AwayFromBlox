@@ -34,7 +34,7 @@ F1:: {
 	}
 
 	While (IsRunning) {
-		lastID := WinGetID("A")
+		lastID := WinExist("A")
 		robloxID := WinExist("Roblox")
 		if (robloxID) {
 			; BEGIN WORK - any automation must be done between the BlockInputs
