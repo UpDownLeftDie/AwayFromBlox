@@ -4,7 +4,7 @@ AutoHotkey scripts to specifically to help you when you're *Away From (Ro)Blox*
 
 ## How to use (.exe file)
 
-1. [Download latest release](/releases/latest)
+1. [Download latest release](https://github.com/UpDownLeftDie/AwayFromBlox/releases/latest)
 2. Double-click to run
    * Optionally, run as Administrator for input-blocking
 3. Press `F1` to activate
