@@ -27,16 +27,16 @@ SetTrayTip("Script is ready for input.`n`nAnti-kick: Disabled")
 #MaxThreadsPerHotkey 2
 F1:: {
 	global IsRunning := !IsRunning
-	If (IsRunning) {
+	if (IsRunning) {
 		SetTrayTip("Anti-kick: Enabled")
-	} Else {
+	} else {
 		Reload()
 	}
 
-	While (IsRunning) {
+	while (IsRunning) {
 		lastID := WinExist("A")
 		robloxID := WinExist("Roblox")
-		If (robloxID) {
+		if (robloxID) {
 			; BEGIN WORK - any automation must be done between the BlockInputs
 			BlockInput(True)
 
@@ -47,7 +47,7 @@ F1:: {
 
 			BreakAFK()
 
-			If (lastID) {
+			if (lastID) {
 				WinActivate(lastID)
 			}
 			BlockInput(False)
@@ -55,7 +55,7 @@ F1:: {
 
 			antiKickInterval := GetIntervalMins()
 			sleep(antiKickInterval)
-		} Else {
+		} else {
 			sleep(FIVE_MINS)
 		}
 	}
@@ -80,18 +80,18 @@ BreakAFK() {
 	Attempts to reconnect the user if the reconnection box is detected
 */
 Reconnect(winWidth, winHeight) {
-	Try {
-		For (searchImage in RECONNECT_IMG_SEARCH_ARRAY) {
-			If (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
+	try {
+		for (searchImage in RECONNECT_IMG_SEARCH_ARRAY) {
+			if (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
 				ClickImageMidPoint(searchImage, foundX, foundY)
 				return 1
 			}
 		}
-	} Catch as err {
+	} catch as err {
 		MsgBox("Something went wrong when trying to check for reconnect button:`n" err.Message)
 		Reload()
 	}
-	Return 0
+	return 0
 }
 
 /*
@@ -100,7 +100,7 @@ Reconnect(winWidth, winHeight) {
 */
 GetIntervalMins() {
 	randomMins := Random(THREE_MINS, FIFTEEN_MINS)
-	Return randomMins
+	return randomMins
 }
 
 /*
@@ -113,7 +113,7 @@ GetImageMidPoint(file) {
 	imgGui.Show("Hide")
 	ControlGetPos(,, &w, &h, img.hwnd)
 	imgGui.Destroy()
-	Return [w/2, h/2]
+	return [w/2, h/2]
 }
 
 /*
@@ -126,7 +126,7 @@ ClickImageMidPoint(imageFile, xOffset, yOffset){
 
 	; ! Clicks seems to be flakey, this is why using two Click() instead of the 3rd parameter
 	Click(clickX, clickY)
-	sleep(350)
+	Sleep(350)
 	Click(clickX, clickY)
 }
 
