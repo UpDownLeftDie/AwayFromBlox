@@ -22,13 +22,13 @@ FileInstall("data\reconnect-text.png", RECONNECT_TEXT_IMG, 1)
 	globals
 */
 IsRunning := false
-SetTrayTip("Script is ready for input. Anti-kick is disabled.")
+SetTrayTip("Script is ready for input.`n`nAnti-kick: Disabled")
 
 #MaxThreadsPerHotkey 2
 F1:: {
 	global IsRunning := !IsRunning
 	If (IsRunning) {
-		SetTrayTip("Anti-kick is enabled.")
+		SetTrayTip("Anti-kick: Enabled")
 	} Else {
 		Reload()
 	}
@@ -36,7 +36,7 @@ F1:: {
 	While (IsRunning) {
 		lastID := WinExist("A")
 		robloxID := WinExist("Roblox")
-		if (robloxID) {
+		If (robloxID) {
 			; BEGIN WORK - any automation must be done between the BlockInputs
 			BlockInput(True)
 
@@ -47,7 +47,7 @@ F1:: {
 
 			BreakAFK()
 
-			if (lastID) {
+			If (lastID) {
 				WinActivate(lastID)
 			}
 			BlockInput(False)
@@ -55,7 +55,7 @@ F1:: {
 
 			antiKickInterval := GetIntervalMins()
 			sleep(antiKickInterval)
-		} else {
+		} Else {
 			sleep(FIVE_MINS)
 		}
 	}
@@ -80,18 +80,18 @@ BreakAFK() {
 	Attempts to reconnect the user if the reconnection box is detected
 */
 Reconnect(winWidth, winHeight) {
-	try {
-		for (searchImage in RECONNECT_IMG_SEARCH_ARRAY) {
-			if (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
+	Try {
+		For (searchImage in RECONNECT_IMG_SEARCH_ARRAY) {
+			If (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
 				ClickImageMidPoint(searchImage, foundX, foundY)
 				return 1
 			}
 		}
-	} catch as err {
-		MsgBox "Something went wrong when trying to check for reconnect button:`n" err.Message
-		Reload
+	} Catch as err {
+		MsgBox("Something went wrong when trying to check for reconnect button:`n" err.Message)
+		Reload()
 	}
-	return 0
+	Return 0
 }
 
 /*
@@ -100,7 +100,7 @@ Reconnect(winWidth, winHeight) {
 */
 GetIntervalMins() {
 	randomMins := Random(THREE_MINS, FIFTEEN_MINS)
-	return randomMins
+	Return randomMins
 }
 
 /*
@@ -113,7 +113,7 @@ GetImageMidPoint(file) {
 	imgGui.Show("Hide")
 	ControlGetPos(,, &w, &h, img.hwnd)
 	imgGui.Destroy()
-	return [w/2, h/2]
+	Return [w/2, h/2]
 }
 
 /*
