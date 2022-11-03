@@ -47,7 +47,7 @@ F1:: {
 
 			BreakAFK()
 
-			if (lastID) {
+			if (lastID && lastID != robloxID) {
 				WinActivate(lastID)
 			}
 			BlockInput(False)
