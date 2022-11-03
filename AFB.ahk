@@ -41,17 +41,19 @@ F1:: {
 			BlockInput(True)
 
 			WinActivate(robloxID)
-			WinGetPos(&winX, &winY, &winWidth, &winHeight, robloxID)
+			if (WinWaitActive(robloxID, , 10)) {
+				WinGetPos(&winX, &winY, &winWidth, &winHeight, robloxID)
+				Reconnect(winWidth, winHeight)
+				BreakAFK()
+			}
 
-			Reconnect(winWidth, winHeight)
-
-			BreakAFK()
+			BlockInput(False)
+			; END OF WORK
 
 			if (lastID && lastID != robloxID) {
 				WinActivate(lastID)
+				WinWaitActive(lastID, , 1)
 			}
-			BlockInput(False)
-			; END OF WORK
 
 			antiKickInterval := GetIntervalMins()
 			sleep(antiKickInterval)
