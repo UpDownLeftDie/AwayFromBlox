@@ -1,5 +1,6 @@
 ; AHK v2
 #SingleInstance Force
+#SetTitleMatchMode 3
 
 /*
 	constants
