@@ -22,18 +22,18 @@ FileInstall("data\reconnect-text.png", RECONNECT_TEXT_IMG, 1)
 	globals
 */
 IsRunning := false
-SetTrayTip("Script is ready for input. Anti-kick is disabled.")
+SetTrayTip("Script is ready for input.`n`nAnti-kick: Disabled")
 
 #MaxThreadsPerHotkey 2
 F1:: {
 	global IsRunning := !IsRunning
-	If (IsRunning) {
-		SetTrayTip("Anti-kick is enabled.")
-	} Else {
+	if (IsRunning) {
+		SetTrayTip("Anti-kick: Enabled")
+	} else {
 		Reload()
 	}
 
-	While (IsRunning) {
+	while (IsRunning) {
 		lastID := WinExist("A")
 		robloxID := WinExist("Roblox")
 		if (robloxID) {
@@ -90,8 +90,8 @@ Reconnect(winWidth, winHeight) {
 			}
 		}
 	} catch as err {
-		MsgBox "Something went wrong when trying to check for reconnect button:`n" err.Message
-		Reload
+		MsgBox("Something went wrong when trying to check for reconnect button:`n" err.Message)
+		Reload()
 	}
 	return 0
 }
@@ -128,7 +128,7 @@ ClickImageMidPoint(imageFile, xOffset, yOffset){
 
 	; ! Clicks seems to be flakey, this is why using two Click() instead of the 3rd parameter
 	Click(clickX, clickY)
-	sleep(350)
+	Sleep(350)
 	Click(clickX, clickY)
 }
 
