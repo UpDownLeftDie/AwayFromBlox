@@ -86,7 +86,7 @@ Reconnect(winWidth, winHeight) {
 	try {
 		for (searchImage in RECONNECT_IMG_SEARCH_ARRAY) {
 			if (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
-				MouseMove(foundX - 20, FoundY - 20, 0)
+				MouseMove(foundX - 100, FoundY - 100, 0)
 				ClickImageMidPoint(searchImage, foundX, foundY)
 				return 1
 			}
@@ -128,8 +128,9 @@ ClickImageMidPoint(imageFile, xOffset, yOffset){
 	clickX 				:= imageMidPoint[1] + xOffset
 	clickY 				:= imageMidPoint[2] + yOffset
 
-	MouseMove(clickX, clickY, 25)
-	Sleep(250)
+	SendMode("Event")
+	MouseMove(clickX, clickY, 10)
+	SendMode("Input")
 	Click(clickX, clickY)
 }
 
