@@ -86,7 +86,6 @@ Reconnect(winWidth, winHeight) {
 	try {
 		for (searchImage in RECONNECT_IMG_SEARCH_ARRAY) {
 			if (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
-				MouseMove(foundX - 100, FoundY - 100, 0)
 				ClickImageMidPoint(searchImage, foundX, foundY)
 				return 1
 			}
@@ -128,6 +127,15 @@ ClickImageMidPoint(imageFile, xOffset, yOffset){
 	clickX 				:= imageMidPoint[1] + xOffset
 	clickY 				:= imageMidPoint[2] + yOffset
 
+	/*
+		Teleports Mouse to the corner of the button, offset -100pxs to get further away from the button.
+		Then setting SendMode to Event allows us to "Side" the mouse onto the Reconnect button, therefore creating a hover event.
+		Then resetting the SendMode and in the end, clicking the button. 
+
+		The reason we "Slide" onto the Reconnect Button is because Roblox refuses to detect a MouseClick if the Mouse snapped onto the button.
+		This code here fixes https://github.com/UpDownLeftDie/AwayFromBlox/issues/16
+	*/
+	MouseMove(xOffset - 100, yOffset - 100, 0)
 	SendMode("Event")
 	MouseMove(clickX, clickY, 10)
 	SendMode("Input")
