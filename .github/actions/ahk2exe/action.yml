@@ -4,7 +4,7 @@ author: nekocodeX, modified for AHK v2 by jaredkotoff
 
 inputs:
   in:
-    description: The path or file name of the AutoHotKey script to compile (without the .ahk extension)
+    description: The path or file name of the AutoHotKey script to compile (without the .ah2 extension)
     required: true
   out:
     description: The path or file name of the compiled executable (by default, an executable of the same name will be created in the path of the AutoHotKey script specified by the "in" parameter)
@@ -30,7 +30,7 @@ runs:
         $build_dir = "$cwd\${{ inputs.build_dir }}"
         Add-Content -Path $env:GITHUB_ENV -Value "cwd=$cwd";
         Add-Content -Path $env:GITHUB_ENV -Value "build_dir=$build_dir";
-        Add-Content -Path $env:GITHUB_ENV -Value "in_name=${{ inputs.in }}.ahk";
+        Add-Content -Path $env:GITHUB_ENV -Value "in_name=${{ inputs.in }}.ah2";
         if ('${{ inputs.out }}' -ne '') {
            Add-Content -Path $env:GITHUB_ENV -Value "out_name=${{ inputs.out }}";
         } else {

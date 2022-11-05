@@ -9,12 +9,12 @@ AutoHotkey scripts to specifically to help you when you're *Away From (Ro)Blox*
    * Optionally, run as Administrator for input-blocking
 3. Press `F1` to activate
 
-## How to use (.ahk file)
+## How to use (.ah2 file)
 
 1. **Install [AutoHotkey v2](https://www.autohotkey.com/download/ahk-v2.exe)** Beta or higher
 2. [Download latest release](https://github.com/UpDownLeftDie/AwayFromBlox/releases/latest)
 3. Double-click to run
-   * You may need to open AutoHotkey and change Launch Config so it uses v2
+   * You may need to set file extension association to AHK v2 exe
    * Optionally, run as Administrator for input-blocking
 4. Press `F1` to activate
 
