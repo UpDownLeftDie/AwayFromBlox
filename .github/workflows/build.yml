@@ -27,7 +27,7 @@ jobs:
       - name: Easy Zip Files
         uses: vimtor/action-zip@v1
         with:
-          files: AFB.ahk plugins/
+          files: AFB.ah2 plugins/
           dest: build/AFB.zip
 
       - name: Release
