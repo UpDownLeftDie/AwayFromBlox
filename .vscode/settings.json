@@ -12,10 +12,13 @@
   ],
   "cSpell.words": [
     "AFB",
+    "autohotkey",
     "AwayFromBlox",
     "Blox",
     "hwnd",
-    "Iconi"
+    "Iconi",
+    "Keybd",
+    "pwsh"
   ],
   "AutoHotkey2.CompleteFunctionParens": true,
   "AutoHotkey2.FormatOptions": {
