@@ -2,6 +2,8 @@
 #SingleInstance Force
 Persistent
 SetTitleMatchMode 3
+InstallKeybdHook	; Hooks needed for A_TimeIdlePhysical
+InstallMouseHook
 
 /*
 	constants
@@ -23,6 +25,7 @@ FileInstall("data\reconnect-text.png", RECONNECT_TEXT_IMG, 1)
 /*
 	globals
 */
+BlockInput(False)
 IsRunning := false
 SetTrayTip("Script is ready for input.`n`nAnti-kick: Disabled", "Icon! Mute")
 
@@ -38,9 +41,10 @@ F1:: {
 	while (IsRunning) {
 		lastID := WinExist("A")
 		robloxID := WinExist("Roblox")
-		if (robloxID) {
+		isUserPlaying := lastID == robloxID && A_TimeIdlePhysical < FIVE_MINS
+		if (robloxID && !isUserPlaying) {
 			; BEGIN WORK - any automation must be done between the BlockInputs
-			BlockInput(True)
+			BlockInput(True)	; * BlockInput requires script to be run as administrator
 
 			WinActivate(robloxID)
 			if (WinWaitActive(robloxID, , 10)) {
@@ -83,7 +87,7 @@ Reconnect(winWidth, winHeight) {
 	try {
 		for (searchImage in RECONNECT_IMG_SEARCH_ARRAY) {
 			if (ImageSearch(&foundX, &foundY, 0, 0, winWidth, winHeight, searchImage)) {
-				ClickImageMidPoint(searchImage, foundX, foundY)
+				ClickButtonFromImageSearch(searchImage, foundX, foundY)
 				return 1
 			}
 		}
@@ -119,24 +123,31 @@ GetImageMidPoint(file) {
 /*
 	Clicks the middle of an image with an offset
 */
-ClickImageMidPoint(imageFile, xOffset, yOffset) {
+ClickButtonFromImageSearch(imageFile, xOffset, yOffset) {
 	imageMidPoint := GetImageMidPoint(imageFile)
-	clickX := imageMidPoint[1] + xOffset
-	clickY := imageMidPoint[2] + yOffset
+	xClick := xOffset + imageMidPoint[1]
+	yClick := yOffset + imageMidPoint[2]
+	xOutside := xOffset - imageMidPoint[1]
+	yOutside := yOffset - imageMidPoint[2]
 
-	/*
-		Teleports Mouse to the corner of the button, offset -100pxs to get further away from the button.
-		Then setting SendMode to Event allows us to "Side" the mouse onto the Reconnect button, therefore creating a hover event.
-		Then resetting the SendMode and in the end, clicking the button.
-	
-		The reason we "Slide" onto the Reconnect Button is because Roblox refuses to detect a MouseClick if the Mouse snapped onto the button.
-		This code here fixes https://github.com/UpDownLeftDie/AwayFromBlox/issues/16
-	*/
-	MouseMove(xOffset - 100, yOffset - 100, 0)
+	ClickRobloxButton(xOutside, yOutside, xClick, yClick)
+}
+
+/*
+	Moves the mouse to (xOutside, yOutside) which should be outside of the button.
+	Then, set SendMode to Event allows us to "Slide" the mouse onto the button.
+	Finally, resetting the SendMode and in the end, clicking the button.
+
+	The reason we "slide" onto the button is because Roblox refuses to detect a
+	MouseClick if the Mouse teleported onto the button.
+	This code here fixes https://github.com/UpDownLeftDie/AwayFromBlox/issues/16
+*/
+ClickRobloxButton(xOutside, yOutside, xClick, yClick) {
+	MouseMove(xOutside, yOutside, 0)
 	SendMode("Event")
-	MouseMove(clickX, clickY, 10)
+	MouseMove(xClick, yClick, 10)
 	SendMode("Input")
-	Click(clickX, clickY)
+	Click(xClick, yClick)
 }
 
 SetTrayTip(str, options := "Mute", title := "AwayFromBlox") {
