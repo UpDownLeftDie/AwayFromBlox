@@ -1,8 +1,25 @@
 {
-  "[ahk]": {
-    "editor.defaultFormatter": "mark-wiemer.vscode-autohotkey-plus-plus"
+  "[ahk2]": {
+    "editor.defaultFormatter": "thqby.vscode-autohotkey2-lsp",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    }
   },
   "cSpell.enableFiletypes": [
-    "ahk"
-  ]
+    "ahk", "ahk2", "ah2"
+  ],
+  "cSpell.words": [
+    "AFB",
+    "AwayFromBlox",
+    "Blox",
+    "hwnd",
+    "Iconi"
+  ],
+  "AutoHotkey2.CompleteFunctionParens": true,
+  "AutoHotkey2.FormatOptions": {
+    "space_before_conditional": true,
+    "wrap_line_length": 120,
+  }
 }

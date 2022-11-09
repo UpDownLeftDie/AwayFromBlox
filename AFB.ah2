@@ -1,18 +1,19 @@
-; AHK v2
+#Requires AutoHotkey v2.0-beta.12+
 #SingleInstance Force
+Persistent
 SetTitleMatchMode 3
 
 /*
 	constants
 */
-ONE_MIN			 := 60 * 1000
-THREE_MINS	 := 3 * ONE_MIN
-FIVE_MINS 	 := 5 * ONE_MIN
+ONE_MIN := 60 * 1000
+THREE_MINS := 3 * ONE_MIN
+FIVE_MINS := 5 * ONE_MIN
 FIFTEEN_MINS := 15 * ONE_MIN
 
-DATA_DIR 									 := A_WorkingDir . "\data"
-RECONNECT_BUTTON_IMG 			 := DATA_DIR . "\reconnect-button.png"
-RECONNECT_TEXT_IMG 				 := DATA_DIR . "\reconnect-text.png"
+DATA_DIR := A_WorkingDir . "\data"
+RECONNECT_BUTTON_IMG := DATA_DIR . "\reconnect-button.png"
+RECONNECT_TEXT_IMG := DATA_DIR . "\reconnect-text.png"
 RECONNECT_IMG_SEARCH_ARRAY := [RECONNECT_BUTTON_IMG, RECONNECT_TEXT_IMG]
 
 DirCreate(DATA_DIR)
@@ -23,14 +24,14 @@ FileInstall("data\reconnect-text.png", RECONNECT_TEXT_IMG, 1)
 	globals
 */
 IsRunning := false
-SetTrayTip("Script is ready for input.`n`nAnti-kick: Disabled")
+SetTrayTip("Script is ready for input.`n`nAnti-kick: Disabled", "Icon! Mute")
 
 #MaxThreadsPerHotkey 2
 F1:: {
 	global IsRunning := !IsRunning
-	if (IsRunning) {
-		SetTrayTip("Anti-kick: Enabled")
-	} else {
+	if (IsRunning)
+		SetTrayTip("Anti-kick: Enabled", "Iconi")
+	else {
 		Reload()
 	}
 
@@ -73,10 +74,6 @@ BreakAFK() {
 	send("{Space down}")
 	sleep(50)
 	send("{Space up}")
-	sleep(500)
-	send("{Space down}")
-	sleep(50)
-	send("{Space up}")
 }
 
 /*
@@ -112,26 +109,26 @@ GetIntervalMins() {
 */
 GetImageMidPoint(file) {
 	imgGui := Gui()
-	img 	 := imgGui.Add("Picture",, file)
+	img := imgGui.Add("Picture", , file)
 	imgGui.Show("Hide")
-	ControlGetPos(,, &w, &h, img.hwnd)
+	ControlGetPos(, , &w, &h, img.hwnd)
 	imgGui.Destroy()
-	return [w/2, h/2]
+	return [w / 2, h / 2]
 }
 
 /*
 	Clicks the middle of an image with an offset
 */
-ClickImageMidPoint(imageFile, xOffset, yOffset){
+ClickImageMidPoint(imageFile, xOffset, yOffset) {
 	imageMidPoint := GetImageMidPoint(imageFile)
-	clickX 				:= imageMidPoint[1] + xOffset
-	clickY 				:= imageMidPoint[2] + yOffset
+	clickX := imageMidPoint[1] + xOffset
+	clickY := imageMidPoint[2] + yOffset
 
 	/*
 		Teleports Mouse to the corner of the button, offset -100pxs to get further away from the button.
 		Then setting SendMode to Event allows us to "Side" the mouse onto the Reconnect button, therefore creating a hover event.
-		Then resetting the SendMode and in the end, clicking the button. 
-
+		Then resetting the SendMode and in the end, clicking the button.
+	
 		The reason we "Slide" onto the Reconnect Button is because Roblox refuses to detect a MouseClick if the Mouse snapped onto the button.
 		This code here fixes https://github.com/UpDownLeftDie/AwayFromBlox/issues/16
 	*/
@@ -142,6 +139,6 @@ ClickImageMidPoint(imageFile, xOffset, yOffset){
 	Click(clickX, clickY)
 }
 
-SetTrayTip(str, title := "AwayFromBlox") {
-	TrayTip(str, title)
+SetTrayTip(str, options := "Mute", title := "AwayFromBlox") {
+	TrayTip(str, title, options)
 }
